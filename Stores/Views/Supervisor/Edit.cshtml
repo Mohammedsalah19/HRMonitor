@@ -29,6 +29,36 @@
     };
 
 
+
+    //function reserPassword(Id) {
+    //    var Id = Id
+    //    $.ajax({
+    //        type: "Post",
+    //        url: '/Supervisor/reserPassword?reserPassword=' + Id,
+
+    //        data: data,
+    //        success: function (result) {
+    //            alert("تمت الاضافه بنجاج");
+    //            // window.location.href = "/Home/index";
+    //            location.reload(true);
+
+
+    //        }
+    //    })
+
+    //};
+
+    var reserPassword = function (Id) {
+        var Id = Id;
+        $.ajax({
+            type: "POST",
+            url: '/Supervisor/reserPassword?Id=' + Id,
+            success: function (result) {
+                alert("تم استاعدة كلمة المرور الى حالتها الاولى");
+                 location.reload(true);
+            }
+        })
+    }
     $(document).ready(function () {
         $('input[type="checkbox"]').click(function () {
 
@@ -59,7 +89,54 @@
         });
     });
 
+    $(document).ready(function () {
+        $("#Number").change(function () {
+            var Number = $(this);
+            
+            $.ajax({
+                url: '/Supervisor/CheckNumberIfExist?Number=' + Number.val(),
+                contentType: "application/json;charset=utf-8",
+                dataType: "Json",
+                type: 'GET',
+                async: true,
+                cache: false,
+                success: function (data) {
+                    if (data == false) {
+                        $("#SaveRecord").attr("disabled", false);
+                        $('#Message').text(' ');
+                    }
+                    else {
+                        $("#SaveRecord").attr("disabled", true);
+                        $('#Message').text('هذا الرقم الوظيفى غير متاح');
+                        $('#Message').css({ 'color': 'red' });
 
+                    }
+                }
+            });
+        });
+    });
+
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Number').keypress(function (e) {
+            if (this.value.length == 0 && e.which == 48) {
+                return false;
+            }
+        });
+    });
+
+
+    $(document).ready(function () {
+        $('#Number').focus(function (e) {
+            var d = $(this);
+            if (this.value.length == 0 && e.which == 48) {
+                return false;
+            }
+        });
+    });
 </script>
 
 @using (Html.BeginForm())
@@ -79,14 +156,18 @@
         <div class="form-group">
             @Html.LabelFor(model => model.userY.Number, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.userY.Number, new { htmlAttributes = new { @Name = "Number", @class = "form-control text-right" } })
+                @Html.EditorFor(model => model.userY.Number, new { htmlAttributes = new { @Name = "Number", @class = "form-control text-right", @ID = "Number", @type = "number", @min = "1" } })
                 @Html.ValidationMessageFor(model => model.userY.Number, "", new { @class = "text-danger" })
             </div>
+            <p id="Message"></p>
         </div>
+        <a href="#" class="btn btn-danger" onclick="reserPassword(@Model.userY.Id)">تعديل كلمة المرور</a>
+
+        @*<input value="تعديل كلمة المرور" type="button" class="btn btn-info" onclick="reserPassword(@Model.userY.Id)" />*@
         <div class="form-group">
-            @Html.LabelFor(model => model.userY.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            @*@Html.LabelFor(model => model.userY.Password, htmlAttributes: new { @class = "control-label col-md-2" })*@
             <div class="col-md-10">
-                @Html.EditorFor(model => model.userY.Password, new { htmlAttributes = new { @Name = "Password", @class = "form-control text-right" } })
+                @Html.EditorFor(model => model.userY.Password, new { htmlAttributes = new { @Name = "Password", @class = "form-control text-right", @hidden = "@hidden" } })
                 @Html.ValidationMessageFor(model => model.userY.Password, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -104,7 +185,6 @@
         <div class="form-group">
             <table>
                 <tr>
-
                     @foreach (var item in Model.CategoryX.GroupBy(f => f.CategoryName).Select(f => f.FirstOrDefault()).Where(f => f.Status == false))
                     {
 
@@ -122,7 +202,7 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="تعديل" class="btn btn-info" />
+                <input type="submit" value="تعديل" id="SaveRecord" class="btn btn-info" />
             </div>
         </div>
     </div>

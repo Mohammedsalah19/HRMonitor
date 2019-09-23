@@ -184,6 +184,18 @@
     <Compile Include="Migrations\201909222310331_ثيهف2.Designer.cs">
       <DependentUpon>201909222310331_ثيهف2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909231959321_ddd.cs" />
+    <Compile Include="Migrations\201909231959321_ddd.Designer.cs">
+      <DependentUpon>201909231959321_ddd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909232013393_asdsds.cs" />
+    <Compile Include="Migrations\201909232013393_asdsds.Designer.cs">
+      <DependentUpon>201909232013393_asdsds.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909232047421_editcat.cs" />
+    <Compile Include="Migrations\201909232047421_editcat.Designer.cs">
+      <DependentUpon>201909232047421_editcat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CommonClasses\DaysOffWithEX.cs" />
@@ -369,6 +381,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909222310331_ثيهف2.resx">
       <DependentUpon>201909222310331_ثيهف2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909231959321_ddd.resx">
+      <DependentUpon>201909231959321_ddd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909232013393_asdsds.resx">
+      <DependentUpon>201909232013393_asdsds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909232047421_editcat.resx">
+      <DependentUpon>201909232047421_editcat.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\EmployeeReport.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

@@ -13,9 +13,10 @@ namespace Stores.Models
         public int Id { get; set; }
 
         [DisplayName("اسم المراقب")]
-
-        public string name { get; set; }
+        [Required(ErrorMessage = "يجب الادخال")]
+         public string name { get; set; }
         [DisplayName("الرقم الوظيفى")]
+        [Required(ErrorMessage = "يجب الادخال")]
 
         public string Number { get; set; }
         [DisplayName("كلمه المرور")]

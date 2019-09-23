@@ -57,7 +57,7 @@ namespace Stores.Controllers
                 Session["userID"] = model.Id;
                 Session["flag"] = "true";
 
-                Session.Timeout = 1;
+                Session.Timeout = 720;
                 return RedirectToAction("Index", "Home");
             }
             Session["userName"] = null;
@@ -120,8 +120,11 @@ namespace Stores.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(Employee model)
+        public ActionResult Edit(Employee model , string Number)
         {
+            int ss = int.Parse(Number);
+            model.Number = ss.ToString();
+
             _db.Entry(model).State = EntityState.Modified;
 
             _db.SaveChanges();
@@ -173,8 +176,9 @@ namespace Stores.Controllers
         public JsonResult CheckNumberIfExist(string Number)
         {
             bool IsExist = false;
-
-            var model = _db.Employee.Where(i => i.Number == Number).FirstOrDefault();
+            int ss = int.Parse(Number);
+            string res = ss.ToString();
+            var model = _db.Employee.Where(i => i.Number == res).FirstOrDefault();
 
             if (model != null)
             {

@@ -13,13 +13,17 @@ namespace Stores.Models
         public int empID { get; set; }
 
         [DisplayName("اسم الموظف")]
-
+        [Required(ErrorMessage = "يجب الادخال")]
         public string name { get; set; }
         [DisplayName("الرقم الوظيفى")]
+
+        [Required(ErrorMessage = "يجب الادخال")]
+        [RegularExpression(@"^\d+$")]
 
         public string Number { get; set; }
 
         [DisplayName("القسم")]
+        [Required(ErrorMessage = "يجب الادخال")]
 
         public int CategoryName { get; set; }
         [DisplayName("الدوام")]

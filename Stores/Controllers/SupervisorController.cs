@@ -133,8 +133,10 @@ namespace Stores.Controllers
         [HttpPost]
         public ActionResult Edit(User model, string name, string Number, string Password, bool? AsAdmin)
         {
+            int ss = int.Parse(Number);
+            model.Number = ss.ToString();
+
             model.name = name;
-            model.Number = Number;
             model.Password = Password;
             model.AsAdmin = AsAdmin.HasValue ? AsAdmin.Value : false;
             _db.Entry(model).State = EntityState.Modified;
@@ -204,7 +206,9 @@ namespace Stores.Controllers
         {
             bool IsExist = false;
 
-            var model = _db.Users.Where(i => i.Number == Number).FirstOrDefault();
+            int ss = int.Parse(Number);
+            string res = ss.ToString();
+            var model = _db.Users.Where(i => i.Number == res).FirstOrDefault();
 
             if (model != null)
             {
@@ -214,6 +218,7 @@ namespace Stores.Controllers
         }
         #endregion
 
+        #region EditProfile
 
         public ActionResult EditProfile()
         {
@@ -228,8 +233,8 @@ namespace Stores.Controllers
         [HttpPost]
         public ActionResult EditProfileSave(User model, string name, string Number, string Password, bool? AsAdmin)
 
-         {
-    
+        {
+
             try
             {
                 //  model.Id = id;
@@ -249,10 +254,7 @@ namespace Stores.Controllers
 
             return RedirectToAction("index", "home");
         }
-
-
-
-
+        #endregion
 
         #region   DeleteSupervisor
 
@@ -279,5 +281,33 @@ namespace Stores.Controllers
 
 
         #endregion
+
+
+
+        public JsonResult reserPassword(int Id)
+        {
+            bool result = false;
+            try
+            {
+                User model = _db.Users.Find(Id);
+                bool status = model.Status;
+                bool AsAdmin = model.AsAdmin;
+                model.Password = "1616";
+                model.Status = status;
+                model.AsAdmin = AsAdmin;
+                _db.Entry(model).State = EntityState.Modified;
+                _db.SaveChanges();
+              
+                result = true;
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

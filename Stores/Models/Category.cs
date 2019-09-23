@@ -11,11 +11,13 @@ namespace Stores.Models
     {
         [Key]
         public int id { get; set; }
+        [Required(ErrorMessage = "يجب الادخال")]
 
         [DisplayName("اسم القسم")]
 
         public string CategoryName { get; set; }
         [DisplayName("اسم مدير القسم")]
+        [Required(ErrorMessage = "يجب الادخال")]
 
         public string ManagerName { get; set; }
         [DisplayName("حالة القسم")]
