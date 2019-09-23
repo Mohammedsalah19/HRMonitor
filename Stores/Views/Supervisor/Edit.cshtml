@@ -1,0 +1,183 @@
+﻿@model Stores.Models.CommonClasses.UserWithCate
+
+@{
+    ViewBag.Title = "تعديل";
+}
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script>
+
+    function AddNewMowardeen() {
+
+        var elwekel = document.getElementsByClassName("pre");
+
+        $.ajax({
+            type: "Post",
+            url: '/Supervisor/EditPervilage?elwekel=' + elwekel,
+
+            data: JSON.stringify(elwekel),
+            success: function (result) {
+                alert("تمت الاضافه بنجاج");
+                // window.location.href = "/Home/index";
+                location.reload(true);
+
+
+            }
+        })
+
+    };
+
+
+    $(document).ready(function () {
+        $('input[type="checkbox"]').click(function () {
+
+            //add
+            var id = $(this);
+            $.ajax({
+                url: '/Supervisor/Editecheck?id=' + id.val(),
+                contentType: "application/json;charset=utf-8",
+                dataType: "Json",
+                success: function (data) {
+                    $('#PublisherID').empty();
+                }
+            });
+        });
+    });
+
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '/DaysAndReports/ReturnPrevilages',
+            contentType: "application/json;charset=utf-8",
+            dataType: "Json",
+            type: 'GET',
+            success: function (data) {
+                var ress = data.ID + 1;
+                $('#ID').val(ress);
+            }
+        });
+    });
+
+
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<center>
+    <div class="form-horizontal" style="border:3px solid #808080">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.userY.Id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.userY.name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.userY.name, new { htmlAttributes = new { @Name = "name", @class = "form-control text-right" } })
+                @Html.ValidationMessageFor(model => model.userY.name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.userY.Number, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.userY.Number, new { htmlAttributes = new { @Name = "Number", @class = "form-control text-right" } })
+                @Html.ValidationMessageFor(model => model.userY.Number, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.userY.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.userY.Password, new { htmlAttributes = new { @Name = "Password", @class = "form-control text-right" } })
+                @Html.ValidationMessageFor(model => model.userY.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.userY.Status, htmlAttributes: new { @class = "control-label text-right" })
+            @Html.EditorFor(model => model.userY.Status, new { htmlAttributes = new { @Name = "Status" } })
+            @Html.ValidationMessageFor(model => model.userY.Status, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.userY.AsAdmin, htmlAttributes: new { @class = "control-label text-right" })
+            @Html.EditorFor(model => model.userY.AsAdmin, new { htmlAttributes = new { @Name = "AsAdmin" } })
+            @Html.ValidationMessageFor(model => model.userY.AsAdmin, "", new { @class = "text-danger" })
+        </div>
+        <b> <p style="border:1px solid #808080;background-color:#40BCBA;color:black "> صلاحيات الاقسام</p></b>
+        <div class="form-group">
+            <table>
+                <tr>
+
+                    @foreach (var item in Model.CategoryX.GroupBy(f => f.CategoryName).Select(f => f.FirstOrDefault()).Where(f => f.Status == false))
+                    {
+
+
+                        <td>
+                            @item.CategoryName
+                            <input type="checkbox" name="@item.id" id="@item.id" class="form-group pre" value="@item.CategoryName" />
+                        </td>
+                        <td></td>
+
+
+                    }
+                </tr>
+            </table>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="تعديل" class="btn btn-info" />
+            </div>
+        </div>
+    </div>
+
+    <ul>
+
+    </ul>
+</center>
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+
+    @*<table class="table" id="myTable" style="text-align:center">
+            <tr class="table-heading " style="background-color:#40BCBA">
+
+                <td>
+                    السماح له بصلاحيات الادمن
+                </td>
+
+                <td>
+                    كلمه المرور
+                </td>
+                <td>
+                    الرقم الوظيفى
+                </td>
+
+
+                <td>
+                    اسم المراقب
+                </td>
+
+            </tr>
+            <tbody>
+                <tr style="text-align:center" class="text-right">
+                    <td>
+                        @Html.EditorFor(model => model.userY.AsAdmin, new { htmlAttributes = new { @Name = "AsAdmin", @class = "form-control  text-right" } })
+                        @Html.ValidationMessageFor(model => model.userY.AsAdmin, "", new { @class = "text-danger" })
+                    </td>
+
+
+                    <td>
+                        @Html.EditorFor(model => model.userY.Password, new { htmlAttributes = new { @Name = "Password", @class = "form-control  text-right" } })
+                        @Html.ValidationMessageFor(model => model.userY.name, "", new { @class = "text-danger" })
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.userY.Number, new { htmlAttributes = new { @Name = "Number", @class = "form-control  text-right" } })
+                        @Html.ValidationMessageFor(model => model.userY.Number, "", new { @class = "text-danger" })
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => model.userY.name, new { htmlAttributes = new { @Name = "name", @class = "form-control text-right" } })
+                        @Html.ValidationMessageFor(model => model.userY.name, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    *@

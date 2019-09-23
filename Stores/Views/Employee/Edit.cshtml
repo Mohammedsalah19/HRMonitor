@@ -1,0 +1,108 @@
+﻿@model Stores.Models.Employee
+@{
+    ViewBag.Title = "تعديل";
+}
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script>
+
+
+    $(document).ready(function () {
+        $("#Number").change(function () {
+            var Number = $(this);
+            $.ajax({
+                url: '/Employee/CheckNumberIfExist?Number=' + Number.val(),
+                contentType: "application/json;charset=utf-8",
+                dataType: "Json",
+                type: 'GET',
+                async: true,
+                cache: false,
+                success: function (data) {
+                    if (data == false) {
+                        $("#SaveRecord").attr("disabled", false);
+                        $('#Message').text(' ');
+                    }
+                    else {
+                        $("#SaveRecord").attr("disabled", true);
+                        $('#Message').text('هذا الرقم الوظيفى غير متاح');
+                        $('#Message').css({ 'color': 'red' });
+
+                    }
+                }
+            });
+        });
+    });
+
+
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <Center>
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.empID)
+            <div class="form-group">
+                @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control  text-right" } })
+                    @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Number, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @*<input type="text" name="Number" id="Number" placeholder=" الرقم الوظيفى" class="form-control" required />*@
+
+                    @Html.EditorFor(model => model.Number, new { htmlAttributes = new { @class = "form-control text-right dd", ID = "Number" } })
+                    @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
+                    <p id="Message"></p>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("CategoryName", ViewBag.Category as SelectList, "اختار القسم", htmlAttributes: new { @class = "form-control text-right" })
+                    @*@Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })*@
+                </div>
+            </div>
+            <div class="form-group">
+                <label> اختار ساعات الدوام</label>
+                <br />
+                @{
+                    if (@Model.workHour == "دوام 7 ساعات")
+                    {
+                        <span>دوام 7 ساعات</span> <input type="radio" name="workHour" value="دوام 7 ساعات" class="form-group" checked />
+                        <br />
+
+                        <span>دوام 6 ساعات</span> <input type="radio" name="workHour" value="دوام 6 ساعات" class="form-group" />
+
+                    }
+                    else
+                    {
+                        <span>دوام 7 ساعات</span> <input type="radio" name="workHour" value="دوام 7 ساعات" class="form-group" />
+                        <br />
+                        <span>دوام 6 ساعات</span> <input type="radio" name="workHour" value="دوام 6 ساعات" class="form-group" checked />
+
+
+
+                    }
+
+                }
+            </div>
+   
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="تعديل" id="SaveRecord" class="btn btn-info" />
+                </div>
+            </div>
+        </div>
+    </Center>
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

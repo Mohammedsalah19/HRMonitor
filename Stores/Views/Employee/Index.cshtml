@@ -1,0 +1,244 @@
+﻿@model  Stores.Models.CommonClasses.DaysOffWithEX
+@{
+    ViewBag.Title = "الموطفين";
+}
+
+<script>
+
+
+
+    // add Category form
+
+    function AddNewMowardeen(StudentId) {
+        $("#form")[0].reset();
+        $("#id").val(0);
+        $("#ModalTitle").html("اضافه موظف جديد");
+        $("#ModalTitle").css("text-align:center");
+        $("#MyModal").modal();
+
+    }
+
+
+
+    // add client
+
+    function AddMoward() {
+        $("#name").prop('required', true);
+        $("#Number").prop('required', true);
+        var data = $("#SubmitForm2").serialize();
+
+        var name = $("#name").val();
+        var Number = $("#Number").val();
+        if (name.length > 0 && Number.length >0) {
+
+
+            $.ajax({
+                type: "Post",
+                url: '/Employee/SaveEmpData',
+                data: data,
+                success: function (result) {
+                    alert("تمت الاضافه بنجاج");
+                    // window.location.href = "/Home/index";
+                    $("#MyModal").modal("hide");
+                    location.reload(true);
+
+
+                }
+            })
+        }
+    };
+
+
+    $(document).ready(function () {
+        $("#Number").change(function () {
+            var Number = $(this);
+            $.ajax({
+                url: '/Employee/CheckNumberIfExist?Number=' + Number.val(),
+                contentType: "application/json;charset=utf-8",
+                dataType: "Json",
+                type: 'GET',
+                async: true,
+                cache: false,
+                success: function (data) {
+                    if (data == false) {
+                        $("#SaveRecord").attr("disabled", false);
+                        $('#Message').text(' ');
+                    }
+                    else {
+                        $("#SaveRecord").attr("disabled", true);
+                        $('#Message').text('هذا الرقم الوظيفى غير متاح');
+                        $('#Message').css({ 'color': 'red' });
+
+                    }
+                }
+            });
+        });
+    });
+
+
+    //var ConfirmDelete = function (empID) {
+    //    var ff = empID;
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "/Employee/DeleteEmp?empID=" + empID,
+    //        success: function (result) {
+    //            alert("تم الحذف بنجاح");
+
+    //            location.reload(true);
+
+    //        }
+    //    })
+    //}
+
+    var DeleteRecord = function (empID) {
+
+        $("#empID").val(empID);
+        $("#DeleteConfirmation").modal("show");
+    }
+
+    var ConfirmDelete = function () {
+        var empID = $("#empID").val();
+         $.ajax({
+            type: "POST",
+             url: "/Employee/DeleteEmp?empID=" + empID,
+            success: function (result) {
+                $("#DeleteConfirmation").modal("hide");
+                location.reload(true);
+            }
+        })
+    }
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Number').keypress(function (e) {
+            if (this.value.length == 0 && e.which == 48) {
+                return false;
+            }
+        });
+    });
+</script>
+<center>
+    <h3>قائمة الموظفين</h3>
+    ــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
+    <br />
+    <a href="#" class="btn btn-info" onclick="AddNewMowardeen(0)">اضافه موظف</a> <br /> <br />
+</center>
+<div class="">
+    <table id="dtBasicExample" class="table table-hover table-striped table-bordered" style="text-align:center" cellspacing="0" width="100%">
+        <thead>
+            <tr class="table-heading" style="background-color:#40BCBA">
+                <th>حذف/تعديل</th>
+                <p value="" id="empID" hidden></p>
+                <th>
+                    القسم
+
+                </th>
+                <th>
+                    الدوام
+                </th>
+                <th>
+                    الرقم الوظيفى
+                </th>
+                <th>
+                    اسم الموظف
+                </th>
+                <th>
+                    الرقم التسلسلى
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.EmpX)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink("تعديل", "Edit", new { id = item.empID }, new { @class = "btn btn-info", @style = "background-color:#17a2b8" })
+                        <br />
+                        <br />
+
+                        <input type="button" value="حذف" class="btn btn-danger" onclick="DeleteRecord(@item.empID)" />
+                    </td>
+                    <td>
+                        @foreach (var itemS in Model.CategoryX.Where(f => f.id == item.CategoryName))
+                        {
+                            <p>@itemS.CategoryName </p>
+                        }
+                        <p id="CategoryName"></p>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.workHour)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.empID)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="MyModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="form">
+                    <fieldset id="SubmitForm2" class="text-right" style="direction:rtl">
+                        <div class="form-group">
+                            <label>اسم الموظف</label>
+                            <input type="text" name="name" id="name" placeholder="اسم الموظف" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label>الرقم الوظيفى </label>
+                            <input type="number" name="Number" id="Number" placeholder=" الرقم الوظيفى" class="form-control" required />
+                            <p id="Message"></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label> القسم</label>
+                            @Html.DropDownList("CategoryName", ViewBag.Category as SelectList, "اختار القسم", htmlAttributes: new { @class = "form-control required", required = (string)null })
+                        </div>
+                        <div class="form-group">
+                            <label> الدوام</label>
+                            <br />
+                            <label>  <input type="radio" name="workHour" value="دوام 7 ساعات" required="required" checked="checked" /> دوام 7 ساعات</label>
+                            <br />
+                            <label>  <input type="radio" name="workHour" value="دوام 6 ساعات" /> دوام 6 ساعات</label>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-block btn-info" onclick="AddMoward();" id="SaveRecord" value="اضافه">اضافه</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="DeleteConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4>الحذف</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-right">هل انت متأكد من الحذف؟</h4>
+            </div>
+            <div class="modal-footer">
+                 <a href="#" class="btn btn-info" data-dismiss="modal" id="r">الغاء</a>
+                <a href="#" class="btn btn-danger" onclick="ConfirmDelete()">حذف</a>
+            </div>
+        </div>
+    </div>
+</div>

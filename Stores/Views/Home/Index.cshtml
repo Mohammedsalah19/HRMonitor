@@ -1,0 +1,97 @@
+﻿ 
+@{
+    ViewBag.Title = "الصفحه الرئيسيه";
+}
+
+ 
+<style>
+
+    td {
+        text-align: center;
+    }
+
+    th {
+        text-align: center;
+    }
+
+
+    body {
+        font-family: 'Cairo';
+    }
+
+    thead {
+        background-color: orange;
+    }
+</style>
+
+<br />
+<br />
+<center>
+    <div class="container">
+
+        <div class="row" style="direction:rtl">
+
+            <div class="col-md-3 offset-md-1 p-2 my-2" style="height:140px;">
+                <div class="bg-primary rounded text-light">
+
+                    <a  href="@Url.Action("index", "Category")" class="btn btn-info " style="height:100%; width:100%; font-size:1.8em"><i class="fas fa-calendar-alt fa-3x"></i><br />الاقسام</a>
+
+                </div>
+            </div>
+
+            <div class="col-md-3 offset-md-1  s p-2 my-2" style="height:140px;">
+                <div class="bg-primary rounded text-light">
+
+
+                    <a disabled href="@Url.Action("index", "Supervisor")" class="btn btn-info  " style="height:100%;width:100%;font-size:1.8em"><i class="fas fa-binoculars fa-3x"></i><br /> قائمة المراقبين</a>
+
+
+
+                </div>
+            </div>
+
+            <div class="col-md-3   p-2 my-2  " style="height:140px;">
+                <div class="bg-primary rounded text-light">
+
+
+                    <a href="@Url.Action("index", "Employee")" class="btn btn-info  " style="height:100%; width:100%; font-size:1.8em"><i class="fas fa-users fa-3x"></i><br />  قائمةالموظفين</a>
+
+
+                </div>
+            </div>
+
+
+
+        </div>
+        <div class="row" style="direction:rtl">
+
+            <div class="col-md-3 offset-md-1 p-2 my-2" style="height:140px;">
+                <div class="bg-primary rounded text-light">
+                    <a href="@Url.Action("Create", "DaysAndReports")" class="btn btn-info " style="height:100%; width:100%; font-size:1.8em"><i class="fas fa-clock fa-3x"></i><br /> ساعات عدم التواجد</a>
+                </div>
+            </div>
+
+
+            <div class="col-md-3 offset-md-1  p-2 my-2" style="height:140px;">
+                <div class="bg-primary rounded text-light">
+                    <a href="@Url.Action("Reports", "DaysAndReports")" class="btn btn-info" style="height:100%; width:100%; font-size:1.8em"><i class="fas fa-file-pdf fa-3x"></i><br /> التقارير و الحسابات</a>
+                </div>
+            </div>
+
+            <div class="col-md-3   p-2 my-2  " style="height:140px;">
+                <div class="bg-primary rounded text-light">
+
+                    <a href="@Url.Action("MangeReport", "DaysAndReports")" class="btn btn-info" style="height:100%; width:100%; font-size:1.8em"><i class="fas fa-cogs fa-3x"></i><br />التحكم بالتقارير</a>
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</center>
+
+
+
+

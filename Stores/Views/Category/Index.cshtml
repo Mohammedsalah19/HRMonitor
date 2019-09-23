@@ -1,0 +1,225 @@
+﻿@model IEnumerable<Stores.Models.Category>
+@{
+    ViewBag.Title = "الاقسام";
+}
+
+<script>
+
+    // add Category form
+
+    function AddNewMowardeen(StudentId) {
+        $("#form")[0].reset();
+        $("#id").val(0);
+        $("#CategoryName").prop('required', true);
+        $("#ManagerName").prop('required', true);
+        $("#ModalTitle").html("اضافه قسم جديد");
+        $("#ModalTitle").css("text-align:center");
+        $("#MyModal").modal();
+
+    }
+
+
+
+    // add cate
+
+    function AddMoward() {
+        $("#CategoryName").prop('required', true);
+        $("#ManagerName").prop('required', true);
+        var data = $("#SubmitForm2").serialize();
+
+        var catename = $("#CategoryName").val();
+        var ManagerName = $("#ManagerName").val();
+        if (catename.length > 0 && ManagerName.length > 0) {
+          
+            $.ajax({
+                type: "Post",
+                url: '/Category/SaveCatData',
+                data: data,
+                success: function (result) {
+                    alert("تمت الاضافه بنجاج");
+                    // window.location.href = "/Home/index";
+                    $("#MyModal").modal("hide");
+                    location.reload(true);
+
+
+                }
+            })
+
+        }
+    };
+
+    // if there is name like this
+    $(document).ready(function () {
+        $("#CategoryName").change(function () {
+            var CategoryName = $(this);
+            $.ajax({
+                url: '/Category/CheckCateIfExist?CategoryName=' + CategoryName.val(),
+                contentType: "application/json;charset=utf-8",
+                dataType: "Json",
+                type: 'GET',
+                async: true,
+                cache: false,
+                success: function (data) {
+                    if (data == false) {
+                        $("#SaveRecord").attr("disabled", false);
+                        $('#Message').text(' ');
+                    }
+                    else {
+                        $("#SaveRecord").attr("disabled", true);
+                        $('#Message').text('هذا القسم قمت باضافته مسبقا');
+                        $('#Message').css({ 'color': 'red' });
+
+                    }
+                }
+            });
+        });
+    });
+
+    var ConfirmDelete = function () {
+        var id = $("#id").val();
+        $.ajax({
+            type: "POST",
+            url: "/Category/DeleteCate?id=" + id,
+            success: function (result) {
+ 
+                location.reload(true);
+
+            }
+        })
+    }
+
+
+    var DeleteRecord = function (id) {
+
+        $("#id").val(id);
+        $("#DeleteConfirmation").modal("show");
+    }
+
+</script>
+
+<center>
+    <h3>قائمة الاقسام</h3>
+    ــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
+    <br />
+    <a href="#" class="btn btn-info" onclick="AddNewMowardeen(0)">اضافه قسم</a> <br /><br />
+</center>
+<div class="">
+    <table id="dtBasicExample" class="table table-hover table-striped table-bordered" style="text-align:center" cellspacing="0" width="100%">
+        <thead>
+            <tr class="table-heading" style="background-color:#40BCBA">
+                <p value="" id="id" hidden></p>
+
+                <th>تعديل/حذف</th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ManagerName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryName)
+                </th>
+                <th>
+                    الرقم التسلسلى
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink("تعديل", "Edit", new { id = item.id }, new { @class = "btn btn-info", @style = "background-color:#17a2b8" })
+                        <br />
+                        <br />
+                        <input type="button" value="حذف" class="btn btn-danger" onclick="DeleteRecord(@item.id)" />
+
+                    </td>
+
+                    <td>
+                        @{
+                            if (item.Status == true)
+                            {
+                                <p style="color:red"> غير متاح</p>
+
+                            }
+                            else
+                            {
+                                <p style="color:green">متاح</p>
+
+                            }
+
+                        }
+                        @*@Html.DisplayFor(modelItem => item.Status)*@
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ManagerName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.id)
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="modal fade" id="MyModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="form">
+                    <fieldset id="SubmitForm2" class="text-right" style="direction:rtl">
+                        <div class="form-group">
+                            <label>اسم القسم</label>
+                            <input type="text" name="CategoryName" id="CategoryName" placeholder="اسم القسم" class="form-control" required="required" />
+                            <p id="Message"></p>
+                        </div>
+                        @*<div class="form-group">
+                                <label> اسم المدير</label>
+                                 @Html.DropDownList("name", ViewBag.Emp as SelectList, "اختار المدير", htmlAttributes: new { @class = "form-control required", required = (string)null })
+                            </div>*@
+                        <div class="form-group">
+                            <label>اسم المدير </label>
+                            <input type="text" name="ManagerName" id="ManagerName" placeholder=" مدير القسم" class="form-control" required="required" />
+                        </div>
+
+                        <div class="form-group">
+                            <input type="checkbox" name="Status" id="Status" value="True" class="" hidden />
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-block btn-info" onclick="AddMoward();" id="SaveRecord" value="اضافه">اضافه</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="DeleteConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4>الحذف</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-right">هل انت متأكد من الحذف؟</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-info" data-dismiss="modal" id="r">الغاء</a>
+                <a href="#" class="btn btn-danger" onclick="ConfirmDelete()">حذف</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+﻿@model  Stores.Models.CommonClasses.UserWithCate
+@{
+    ViewBag.Title = "المراقبين";
+}
+
+<script>
+
+
+
+    function AddNewMowardeen(Id) {
+        var id = Id;
+        $.ajax({
+            type: "Post",
+            url: '/Supervisor/SupervisorStatus?Id=' + Id,
+            success: function (result) {
+                alert("تمت التعديل");
+                // window.location.href = "/Home/index";
+                location.reload(true);
+
+
+            }
+        })
+
+    };
+
+
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+
+    var ConfirmDelete = function () {
+         var Id = $("#Id").val();
+        $.ajax({
+            type: "POST",
+            url: "/Supervisor/DeleteSupervisor?Id=" + Id,
+            success: function (result) {
+                location.reload(true);
+
+            }
+        })
+    }
+
+
+    var DeleteRecord = function (Id) {
+
+        $("#Id").val(Id);
+        $("#DeleteConfirmation").modal("show");
+    }
+
+
+</script>
+
+<center>
+    <h3>قائمة المراقبين</h3>
+    ــــــــــــــــــــــــــــــــــــــــــــــــــــــــــــ
+    <br />
+    @Html.ActionLink("اضافة مراقب جديد", "NewSuperVisor", "Supervisor", null, new { @class = "btn btn-info", @style = "background-color:#17a2b8" })
+</center>
+<br />
+<div class="">
+    <table id="dtBasicExample" class="table table-hover table-striped table-bordered" style="text-align:center" cellspacing="0" width="100%">
+        <thead>
+            <tr class="table-heading" style="background-color:#40BCBA">
+                <p value="" id="Id" hidden></p>
+
+                <th>حذف/تعديل</th>
+                <th>
+                    الصلاحيات
+                </th>
+                <th>
+                    حالة حساب المراقب
+                </th>
+
+                <th>
+                    الرقم الوظيفى
+                </th>
+                <th>
+                    اسم المراقب
+                </th>
+                <th>
+                    الرقم التسلسلى
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.UserX)
+            {
+                <tr>
+                    <td>
+                        <input type="button" value="حذف" class="btn btn-danger" onclick="DeleteRecord(@item.Id)" />
+                        <br />
+                        <br />
+                        @Html.ActionLink("تعديل", "Edit", new { id = item.Id }, new { @class = "btn btn-info", @style = "background-color:#17a2b8" })
+
+                        @*<a href="#" class="btn btn-info" onclick="AddNewMowardeen(@item.Id)"> تفعيل /الغاءالتفعيل</a>*@
+
+                    </td>
+                    <td>
+                        @foreach (var itemS in Model.userAccessX.Where(f => f.userID == item.Id))
+                        {
+                            foreach (var itemSS in Model.CategoryX.Where(f => f.id == itemS.cateID))
+                            {
+                                <p> @itemSS.CategoryName </p>
+                            }
+                        }
+                    </td>
+                    <td>
+                        @{
+                            if (item.Status == true)
+                            {
+                                <p style="color:green">فعال</p>
+                            }
+                            else
+                            {
+                                <p style="color:red"> غير فعال</p>
+
+                            }
+
+                        }
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="DeleteConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4>الحذف</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-right">هل انت متأكد من الحذف؟</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-info" data-dismiss="modal" id="r">الغاء</a>
+                <a href="#" class="btn btn-danger" onclick="ConfirmDelete()">حذف</a>
+            </div>
+        </div>
+    </div>
+</div>

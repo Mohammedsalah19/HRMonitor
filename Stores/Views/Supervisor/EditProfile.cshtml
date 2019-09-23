@@ -1,0 +1,76 @@
+﻿@model Stores.Models.User
+
+@{
+    ViewBag.Title = "معلومات الحساب";
+}
+<script>
+
+
+
+</script>
+
+@*<h3>معلومات الحساب</h3>*@
+
+@using (Html.BeginForm("EditProfileSave", "Supervisor"))
+{
+    @Html.AntiForgeryToken()
+
+    <center>
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.name, new { htmlAttributes = new { @Name = "name", @class = "form-control  text-right" } })
+                    @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Number, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Number, new { htmlAttributes = new { @Name = "Number", @class = "form-control  text-right", @readonly = true } })
+                    @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @Name = "Password", @class = "form-control  text-right" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @Name = "Status", @class = "form-control  text-right", onclick = "return false" } })
+                        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AsAdmin, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.AsAdmin, new { htmlAttributes = new { @Name = "AsAdmin", @class = "form-control  text-right", onclick = "return false" } })
+                        @Html.ValidationMessageFor(model => model.AsAdmin, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="تعديل المعلومات" class="btn btn-info" />
+                </div>
+            </div>
+        </div>
+    </center>
+}
+

@@ -1,0 +1,90 @@
+﻿@model Stores.Models.CommonClasses.UserWithCate
+
+    @{
+        ViewBag.Title = "EditPervilage";
+    }
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script>
+ 
+        function AddNewMowardeen() {
+
+            var elwekel = document.getElementsByClassName("pre");
+
+            $.ajax({
+                type: "Post",
+                url: '/Supervisor/EditPervilage?elwekel=' + elwekel,
+
+                data: JSON.stringify(elwekel),
+                success: function (result) {
+                    alert("تمت الاضافه بنجاج");
+                    // window.location.href = "/Home/index";
+                    location.reload(true);
+
+
+                }
+            })
+
+        };
+
+
+        $(document).ready(function () {
+            $('input[type="checkbox"]').click(function () {
+                if ($(this).prop("checked") == true) {
+
+                    //add
+                    var id = $(this);
+                    $.ajax({
+                        url: '/Supervisor/savecheck?id=' + id.val(),
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "Json",
+                        success: function (data) {
+                            $('#PublisherID').empty();
+
+                        }
+
+                    });
+                }
+                else if ($(this).prop("checked") == false) {
+                    //remove
+                    var id = $(this);
+                    $.ajax({
+                        url: '/Supervisor/Removecheck?id=' + id.val(),
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "Json",
+                        success: function (data) {
+                            $('#PublisherID').empty();
+
+                        }
+
+                    });
+                }
+
+            
+            });
+        });
+
+    </script>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal text-right" style="direction:rtl">
+
+            @foreach (var item in Model.CategoryX)
+            {
+                <input type="checkbox" name="@item.id" id="@item.id" class="form-group pre" value="@item.CategoryName" /> @item.CategoryName <span>||</span>
+            }
+
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <a href="#" class="btn btn-info" onclick="AddNewMowardeen()">اضافه قسم</a> <br /><br />
+                </div>
+            </div>
+        </div>
+    }
+
+ 

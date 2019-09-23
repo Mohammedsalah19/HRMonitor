@@ -1,0 +1,178 @@
+﻿@model Stores.Models.CommonClasses.DaysOffWithEX
+
+@{
+    ViewBag.Title = "ادخال ساعات عدم التواجد";
+}
+
+ 
+<script>
+    // pic upload
+
+    $(document).ready(function () {
+        $("#section").change(function () {
+            var id = $(this);
+            $.ajax({
+                url: '/DaysAndReports/GetEmployee?id=' + id.val(),
+                contentType: "application/json;charset=utf-8",
+                dataType: "Json",
+                success: function (data) {
+                    $('#PublisherID').empty();
+
+                    $.each(data, function (index, value) {
+                        $('#PublisherID').append('<option value="' + value.empID + '">' + value.name + '</option>');
+                    });
+                }
+
+            });
+        });
+    });
+
+
+    // return value of barcode and productname when pro change
+
+    $(document).ready(function () {
+        $("#PublisherID").change(function () {
+            var id = $(this);
+            $.ajax({
+
+                url: '/DaysAndReports/ReturnNumberValue?empID=' + id.val(),
+                contentType: "application/json;charset=utf-8",
+                dataType: "Json",
+                type: 'GET',
+                async: true,
+                cache: false,
+                success: function (data) {
+
+                    $.each(data, function (index, value) {
+
+                        $('#Number').val(value.Number);
+                    });
+                }
+
+
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '/DaysAndReports/ReturnDaysOFnumber',
+            contentType: "application/json;charset=utf-8",
+            dataType: "Json",
+            type: 'GET',
+            success: function (data) {
+                var ress = data.ID + 1;
+                $('#ID').val(ress);
+            }
+        });
+
+
+    });
+
+    $(function () {
+        var txt = $("input#NumberOfMahdar");
+        var func = function (e) {
+            if (e.keyCode === 32) {
+                txt.val(txt.val().replace(/\s/g, ''));
+            }
+        }
+        txt.keyup(func).blur(func);
+    });
+
+</script>
+
+@using (Html.BeginForm("create", "DaysAndReports", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+ 
+
+    <center>
+        <h3>ساعات عدم التواجد</h3>
+ـــــــــــــــــــــــــــــــــــــــــــــــــــــ
+        <br />
+        <div class="form-horizontal ">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <label class="control-label col-md-12">القسم </label>
+                <div class="col-md-12">
+                    <select name="Cat" id="section" class="form-control text-right" required="required">
+                        <option class=" text-right" value=""> اختار القسم</option>
+                        @{
+                            foreach (var item in Model.CategoryX)
+                            {
+                                <option @item.id> @item.CategoryName </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-12">الموظف </label>
+                <div class="col-md-12">
+                    <select name="PublisherID" id="PublisherID" class="form-control  text-right">
+                        <option class=" text-right" value=""> اختار الموظف</option>
+                        @{
+
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">الرقم الوظيفى</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control text-right" name="Number" id="Number" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-12"> تاريخ عدم الوجود </label>
+                <div class="col-md-12">
+                    <input type="date" name="DayofDate" data-date-format='dd-mm-yy' class="form-control text-right" id="DayofDate" required required="required" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-12"> من  </label>
+                <div class="col-md-12">
+                    <input type="time" name="DateFrom" class="form-control text-right" id="DateFrom" required required="required" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-12"> الى </label>
+                <div class="col-md-12">
+                    <input type="time" name="DateTo" data-date-format='dd-mm-yy' class="form-control text-right" id="DateTo" required required="required" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">رقم المحضر </label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control text-right" name="NumberOfMahdar" required="required" id="NumberOfMahdar" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-12"> تاريخ المحضر </label>
+                <div class="col-md-12">
+                    <input type="date" name="reportDate" data-date-format='dd-mm-yy' class="form-control text-right" id="reportDate" required required="required" />
+                </div>
+            </div>
+
+            @*<div class="form-group">
+            <label class="control-label col-md-2">الرقم المحضر</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control text-right" name="ID" id="ID" readonly />
+            </div>
+        </div>*@
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="حفظ" class="btn btn-info" />
+                </div>
+            </div>
+        </div>
+    </center>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

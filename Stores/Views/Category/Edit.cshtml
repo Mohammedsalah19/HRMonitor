@@ -1,0 +1,107 @@
+﻿@model Stores.Models.Category
+
+@{
+    ViewBag.Title = "تعديل";
+}
+
+ <script>
+     function AddMoward() {
+         $("#CategoryName").prop('required', true);
+         $("#ManagerName").prop('required', true);
+         var data = $("#SubmitForm2").serialize();
+
+         var catename = $("#CategoryName").val();
+         var ManagerName = $("#ManagerName").val();
+         if (catename.length > 0 && ManagerName.length > 0) {
+
+             $.ajax({
+                 type: "Post",
+                 url: '/Category/SaveCatData',
+                 data: data,
+                 success: function (result) {
+                     alert("تمت الاضافه بنجاج");
+                     // window.location.href = "/Home/index";
+                     $("#MyModal").modal("hide");
+                     location.reload(true);
+
+
+                 }
+             })
+
+         }
+     };
+
+     // if there is name like this
+     $(document).ready(function () {
+         $("#CategoryName").change(function () {
+             var CategoryName = $(this);
+             $.ajax({
+                 url: '/Category/CheckCateIfExist?CategoryName=' + CategoryName.val(),
+                 contentType: "application/json;charset=utf-8",
+                 dataType: "Json",
+                 type: 'GET',
+                 async: true,
+                 cache: false,
+                 success: function (data) {
+                     if (data == false) {
+                         $("#SaveRecord").attr("disabled", false);
+                         $('#Message').text(' ');
+                     }
+                     else {
+                         $("#SaveRecord").attr("disabled", true);
+                         $('#Message').text('هذا القسم قمت باضافته مسبقا');
+                         $('#Message').css({ 'color': 'red' });
+
+                     }
+                 }
+             });
+         });
+     });
+ </script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+<center>
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control text-right", ID = "CategoryName" } })
+                @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <p id="Message"></p>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ManagerName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.DropDownList("name", ViewBag.Emp as SelectList, "اختار المدير", htmlAttributes: new { @class = "form-control required", required = (string)null })*@
+
+                @Html.EditorFor(model => model.ManagerName, new { htmlAttributes = new { @class = "form-control text-right" } })
+                @Html.ValidationMessageFor(model => model.ManagerName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("اغلاق القسم", htmlAttributes: new { @class = "control-label " })
+       
+          
+                    @Html.EditorFor(model => model.Status)
+                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+             
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="تعديل" id="SaveRecord" class="btn btn-info" />
+            </div>
+        </div>
+    </div>
+</center>
+}
+ 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

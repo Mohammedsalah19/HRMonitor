@@ -1,0 +1,98 @@
+﻿<script>
+    var ConfirmDelete = function (ID) {
+        var ID = $("#ID").val();
+        ;
+        $.ajax({
+            type: "POST",
+            url: "/DaysAndReports/DeleteDayOff?ID=" + ID,
+            success: function (result) {
+                location.reload(true);
+            }
+        })
+    }
+
+
+    $(document).ready(function () {
+        var vv;
+
+        var pp = $("#pp").val();
+        $.ajax({
+            url: '/DaysAndReports/RetuernWorkTimevalue?pp=' + pp,
+            contentType: "application/json;charset=utf-8",
+            dataType: "Json",
+            type: 'GET',
+            async: true,
+            cache: false,
+            success: function (data) {
+                vv = data;
+            }
+        });
+
+    });
+
+
+    var DeleteRecord = function (ID) {
+
+        $("#ID").val(ID);
+        $("#DeleteConfirmation").modal("show");
+    }
+</script>
+@model IEnumerable<Stores.Models.DaysOFF>
+<table id="dtBasicExample" class="table table-hover table-striped table-bordered" style="text-align:center" cellspacing="0" width="100%">
+    @*<table class="table table-hover" id="myTable" style="text-align:center">*@
+    <tr class="table-heading " style="background-color:#40BCBA">
+        <p value="" id="ID" hidden></p>
+
+        <th>حذف</th>
+        <th>
+            رقم المحضر / تاريخه
+        </th>
+        <th>
+            المده الزمنيه الى
+
+        </th>
+        <th>
+            المده الزمنيه من
+        </th>
+        <th>
+            التاريخ
+        </th>
+        <th>
+            اليوم
+        </th>
+    </tr>
+    <tbody id="SetStudentList">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><input type="button" value="حذف" class="btn btn-danger" onclick="DeleteRecord(@item.ID)" /></td>
+                <td>@item.NumberOfMahdar / @item.DayofDate.ToShortDateString()</td>
+                <td>@item.DateTo</td>
+                <td>@item.DateFrom</td>
+                <td>@item.reportDate.ToShortDateString()</td>
+                <td>@item.reportDate.DayOfWeek</td>
+            </tr>
+        
+        }
+    </tbody>
+</table>
+ 
+<h3><p>  الايام:     @ViewBag.Days الساعات :     @ViewBag.Hours الدقائق    @ViewBag.Min </p> </h3>
+
+<div class="modal fade" id="DeleteConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4>الحذف</h4>
+            </div>
+            <div class="modal-body">
+                <h4 class="text-right">هل انت متأكد من الحذف؟</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-info" data-dismiss="modal" id="r">الغاء</a>
+                <a href="#" class="btn btn-danger" onclick="ConfirmDelete()">حذف</a>
+            </div>
+        </div>
+    </div>
+</div>
